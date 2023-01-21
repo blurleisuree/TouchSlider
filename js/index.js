@@ -117,8 +117,8 @@ $(document).ready(function () {
 
     // AutoSlider ----------------------------------------------------------------------------------
 
-    let indicatorBackTransition = $(".slider__indicator_back").css("transition").match(/(\d+|0\.\d+)s/)[0];
-    indicatorBackTransition = indicatorBackTransition.replace("s", "");
+    // let indicatorBackTransition = $(".slider__indicator_back").css("transition").match(/(\d+|0\.\d+)s/)[0];
+    // indicatorBackTransition = indicatorBackTransition.replace("s", "");
 
     // let slideInterval = 2000,
     //     switchInterval = setInterval(nextSlide, slideInterval);
@@ -169,11 +169,60 @@ $(document).ready(function () {
     // }
     // Touch -------------------------------------------------------------------------
 
-    // let posX1 = 0,
-    // posX2 = 0,
-    // posFinal = 0,
-    // posInit = 0,
-    // posThreshold = width * .35,
-    // trfRegExp = /[-0-9.]+(?=px)/;
+    let posX1 = 0,
+        posX2 = 0,
+        posFinal = 0,
+        posInit = 0,
+        posThreshold = width * .35,
+        trfRegExp = /[-0-9.]+/g; // Regexp для считывания transform
+
+    slider.css("transform", "translateX(0)"); // Для того чтобы на первом слайде можно было считывать transform
+
+    let swipeStart = (event) => {
+        posInit = posX1 = event.clientX;
+
+        slider.css('transition', '');
+
+        $(document).on("mousemove", swipeAction);
+        $(document).on("mouseup", swipeEnd);
+
+        slider.addClass("grabbing")
+        slider.removeClass("grab")
+    };
+
+    let swipeAction = (event) => {
+        let styleTransform = slider.css("transform"),
+            transform = +styleTransform.match(trfRegExp)[4];
+
+        posX2 = posX1 - event.clientX;
+        posX1 = event.clientX;
+
+        slider.css("transform", `translateX(${transform - posX2}px)`);
+    }
+
+    let swipeEnd = (event) => {
+        posFinal = posInit - posX1;
+
+        $(document).off("mousemove", swipeAction);
+        $(document).off("mouseup", swipeEnd);
+
+        slider.addClass('grab');
+        slider.removeClass('grabbing');
+
+        if (Math.abs(posFinal) > posThreshold) {
+            if (posInit < posX1) {
+                slideIndex--
+            } else if (posInit > posX1) {
+                slideIndex++
+            }
+        };
+
+        if (posInit !== posX1) {
+            slide()
+        }
+    }
+    
+    slider.addClass("grab")
+    slider.mousedown(swipeStart)
 
 }); 
