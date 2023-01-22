@@ -5,19 +5,16 @@ $(document).ready(function () {
         next = $('.next'),
         sliderList = $('.slide'),
         slideCount = sliderList.length,
-        sliderTransition = $(slider).css("transition"),
         width = slider.width();
 
-    // let slideNow = 1,
-    //     widthNow = width - width,
-    //     i = 1;
-
     let slideIndex = 0,
-        i = 1;
+        i = 1,
+        sliderTransition = 0.5;
 
-    let timeDelay = sliderTransition.match(/(\d+|0\.\d+)s/)[0];
-    timeDelay = timeDelay.replace("s", "");
-    timeDelay = timeDelay * 1000;
+    // let timeDelay = sliderTransition.match(/(\d+|0\.\d+)s/)[0];
+    // timeDelay = timeDelay.replace("s", "");
+    // timeDelay = timeDelay * 1000;
+    let timeDelay = sliderTransition * 1000;
 
     // Текст и цвет -------------------------------------------------------------------------------
 
@@ -86,7 +83,7 @@ $(document).ready(function () {
     // next.click(nextSlide);
 
     let slide = () => {
-        slider.css("transition", "all 0.5s ease-out");
+        slider.css("transition", `all ${sliderTransition}s ease-out`);
         slider.css("transform", `translateX(-${slideIndex * width}px)`);
     }
 
@@ -115,25 +112,7 @@ $(document).ready(function () {
         slide();
     })
 
-    // AutoSlider ----------------------------------------------------------------------------------
-
-    // let indicatorBackTransition = $(".slider__indicator_back").css("transition").match(/(\d+|0\.\d+)s/)[0];
-    // indicatorBackTransition = indicatorBackTransition.replace("s", "");
-
-    // let slideInterval = 2000,
-    //     switchInterval = setInterval(nextSlide, slideInterval);
-
-    // container.hover(function () {
-    //     clearInterval(switchInterval);
-    //     let indicatorWidthNow = $(indicatorBackList[slideNow - 1]).width();
-    //     $(indicatorBackList[slideNow - 1]).css("width", indicatorWidthNow);
-
-    //     let indicatorTransition = (indicatorBackTransition - (indicatorWidthNow / 50));
-    //     $(indicatorBackList[slideNow - 1]).css('transition', `all ${indicatorTransition}s linear`)
-    // }, function () {
-    //     switchInterval = setInterval(nextSlide, slideInterval);
-    //     indicatorFull();
-    // });
+    // points-events не будет работать
 
     // Indicators ------------------------------------------------------------
 
@@ -214,15 +193,14 @@ $(document).ready(function () {
                 slideIndex--
             } else if (posInit > posX1) {
                 slideIndex++
-            }
+            };
         };
 
         if (posInit !== posX1) {
-            slide()
-        }
+            slide();
+        };
     }
     
     slider.addClass("grab")
     slider.mousedown(swipeStart)
-
 }); 
